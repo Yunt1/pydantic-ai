@@ -488,7 +488,10 @@ class VideoUrl(FileUrl):
 
         The choice of supported formats were based on the Bedrock Converse API. Other APIs don't require to use a format.
         """
-        return _video_format_lookup[self.media_type]
+        try:
+            return _video_format_lookup[self.media_type]
+        except KeyError:
+            raise UserError(f'Unsupported video media type: {self.media_type!r}') from None
 
 
 @pydantic_dataclass(repr=False, config=pydantic.ConfigDict(validate_by_name=True))
@@ -535,7 +538,10 @@ class AudioUrl(FileUrl):
     @property
     def format(self) -> AudioFormat:
         """The file format of the audio file."""
-        return _audio_format_lookup[self.media_type]
+        try:
+            return _audio_format_lookup[self.media_type]
+        except KeyError:
+            raise UserError(f'Unsupported audio media type: {self.media_type!r}') from None
 
 
 @pydantic_dataclass(repr=False, config=pydantic.ConfigDict(validate_by_name=True))
@@ -581,7 +587,10 @@ class ImageUrl(FileUrl):
 
         The choice of supported formats were based on the Bedrock Converse API. Other APIs don't require to use a format.
         """
-        return _image_format_lookup[self.media_type]
+        try:
+            return _image_format_lookup[self.media_type]
+        except KeyError:
+            raise UserError(f'Unsupported image media type: {self.media_type!r}') from None
 
 
 @pydantic_dataclass(repr=False, config=pydantic.ConfigDict(validate_by_name=True))

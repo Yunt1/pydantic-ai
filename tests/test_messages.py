@@ -125,6 +125,21 @@ def test_video_url():
 
 
 @pytest.mark.parametrize(
+    'url_type,media_type',
+    [
+        pytest.param(ImageUrl, 'image/tiff', id='image'),
+        pytest.param(AudioUrl, 'audio/mp4a-latm', id='audio'),
+        pytest.param(VideoUrl, 'video/x-msvideo', id='video'),
+    ],
+)
+def test_unsupported_media_type_format_raises_user_error(url_type: type, media_type: str):
+    """A URL whose media type has no Bedrock format raises UserError naming it, not a bare KeyError (#12889)."""
+    url = url_type('https://example.com/file', media_type=media_type)
+    with pytest.raises(UserError, match=media_type):
+        _ = url.format
+
+
+@pytest.mark.parametrize(
     'url,is_youtube',
     [
         pytest.param('https://youtu.be/lCdaVNyHtjU', True, id='youtu.be'),
